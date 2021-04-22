@@ -1,5 +1,6 @@
 <template>
     <div>
+<input type="text"/>
 <van-button loading type="info" loading-text="加载中..." />
     </div>
 </template>
