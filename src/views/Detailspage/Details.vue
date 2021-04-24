@@ -90,7 +90,7 @@ export default {
     },
     mounted() {
          http({
-        url:`/gateway?filmId=${this.$route.params.id}&k=3554534`,  //this.$route.params.id获取当前处于正在使用的路由
+        url:`/gateway?filmId=${this.$route.params.id}&k=3554534`,   //this.$route.params.id获取当前处于正在使用的路由的动态ID
            methods:"get",
         }).then(
             res=>{console.log(res.data.data.film);

@@ -1,6 +1,6 @@
 <template>
     <div>
-    <zzq-swiper></zzq-swiper>
+   <zzq-swiper></zzq-swiper>
     <div id="routeritem">
         <router-link to="/moviepage/childrenishit" tag="div">正在热播</router-link>
          <router-link to="/moviepage/childrenupcoming" tag="div">即将上映</router-link>
@@ -9,7 +9,7 @@
     </div>
 </template>
 <script>
-import ZzqSwiper from '../MoviePagechildren/ZzqSwiper.vue'
+import ZzqSwiper from '../../components/swiper/ZzqSwiper.vue'
 export default {
   components: { ZzqSwiper },
    name:"MoviePage",
