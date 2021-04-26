@@ -32,21 +32,34 @@ const routes = [
       path:"childrenupcoming",
       component:ChildrenUpcoming    //二级路由即将上映页面
   },
-  ]},
+  ],
+  meta:{
+    title:"电影"
+  }
+},
 
 
 
 {
   path:"/theaterpage",
-  component:TheaterPage   //影院页面路由
+  component:TheaterPage,   //影院页面路由
+  meta:{
+    title:"影院"
+  }
 },
 {
   path:"/message",        //资讯页面路由
-  component:Message
+  component:Message,
+  meta:{
+    title:"资讯"
+  }
 },
 {
   path:"/mine",            //我的页面路由
-  component:Mine
+  component:Mine,
+  meta:{
+    title:"我的"
+  }
 },
 {
   path:"/details/:id",      //详情页面动态路由
@@ -75,11 +88,14 @@ const router = new VueRouter({
 
 
 router.beforeEach((to, from, next) => {
+  document.title=to.matched[0].meta.title         //给每个跳转加标签
+
+
   let allpath=["/mine"];
   if(allpath.includes(to.fullPath)){
 
     if(!localStorage.getItem("token")){ 
-      next("/login");              //全局导航守卫
+      next("/login");                            //全局导航守卫
     }else{ 
       next();
     }
@@ -89,8 +105,4 @@ router.beforeEach((to, from, next) => {
     next();
   }
 })
-
-
-
-
 export default router

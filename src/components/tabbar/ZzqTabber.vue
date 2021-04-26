@@ -59,6 +59,6 @@ export default {
     border-right:solid 1px white;
 }
 .action{
-    color: tomato;
+    color: rgb(238, 42, 8);
 }
 </style>
