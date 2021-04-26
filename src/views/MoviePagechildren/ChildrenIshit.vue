@@ -1,7 +1,7 @@
 <template>
     <div id="ChildrenIshititem">
         <!--引入list组件-->
-         <van-list   v-model="loading"  :finished="finished"  finished-text="别拉了没有更多了"  @load="onLoad" :immediate-check="false">
+        <van-list   v-model="loading"  :finished="finished"  finished-text="别拉了没有更多了"  @load="onLoad" :immediate-check="false">
           <van-cell v-for="item in datalist" :key="item.filmId" @click="btnclick(item.filmId)">
                 <div><img :src="item.poster"></div>
                 <div class="lastchild2">
@@ -16,38 +16,38 @@
     </div>
 </template>
 <script>
-import http from "@/network/http.js"
+import { getMoviePagehttp01,getMoviePagehttp02 } from "@/network/MoviePagehttp"
+
 import Vue from 'vue';            //引入vue
-import { List,Cell } from 'vant';    //引入组件
-Vue.use(List).use(Cell);                 //使用组件
+import { List,Cell, Form } from 'vant';    //引入vant组件
+Vue.use(List).use(Cell);                 //使用vant组件
+
+
 Vue.filter("itemactrs",(actrs)=>{
     if(actrs===undefined){return "暂无主演"}
-      return actrs.map((n)=>{ return n.name;}).join(" ");
-})//过滤器
+      return actrs.map((n)=>{ return n.name;}).join(" ");    //过滤器
+})
+
 export default {
    name:"ChildrenIshit",
     data(){
    return{
-datalist:[],//接受数据
+      datalist:[],//接受数据
       loading: false,     //设置引入组件的值
       finished: false,     //设置引入组件的值
+      refreshing: false,
       current:1,//标记者是第几页数据
-  }
-   },
-   methods: {
+  }},
+
+
+ methods:{
        btnclick(id){
            this.$router.push(`/details/${id}`)
        },
-    onLoad(){      //引入的vant list组件到底部触发
+     onLoad(){      //引入的vant list组件到底部触发
      this.current++
 //Ajax请求新数据
- http({
-  url:`/gateway?cityId=${this.$store.state.cityId}&pageNum=${this.current}&pageSize=10&type=1&k=3129205`,
-  method:"get",
-  headers:{
-  'X-Host':'mall.film-ticket.film.list',
-  }
-}).then(success=>{
+getMoviePagehttp02(this.$store.state.cityId,this.current).then(success=>{
     //console.log(success.data.data.films);
     this.datalist=[...this.datalist,...success.data.data.films]
   });
@@ -58,20 +58,15 @@ this.loading = false;
           this.finished = true;
         }
  // 数据全部加载完成
-    },
-   },
-mounted(){
-  http({
-  url:"/gateway?cityId=110100&pageNum=1&pageSize=10&type=1&k=3129205",
-  method:"get",
-  headers:{
-  'X-Host':'mall.film-ticket.film.list',
-  }
-}).then(success=>{
-    console.log(success.data.data.films);
-    this.datalist=success.data.data.films
-  });
-  }
+    },},
+
+mounted() {
+      getMoviePagehttp01().then(success=>{
+        //console.log(success.data.data.films);
+        this.datalist=success.data.data.films
+  });},
+//电影页面正在热播请求数据前10条
+
 }
 </script>
 <style scoped>
