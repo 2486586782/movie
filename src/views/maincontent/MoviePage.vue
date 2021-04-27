@@ -6,7 +6,7 @@
     </div>
 </template>
 <script>
-import ZzqSwiper from '../../components/swiper/ZzqSwiper.vue'
+import ZzqSwiper from '@/components/swiper/ZzqSwiper.vue'
 import ChildRouterItem from '../MoviePagechildren/ChildRouterItem.vue'
 export default {
   components: { ZzqSwiper, ChildRouterItem },

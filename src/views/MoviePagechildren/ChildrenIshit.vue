@@ -1,55 +1,66 @@
 <template>
-    <div id="ChildrenIshititem">
-        <!--引入list组件-->
+   <!--引入list组件-->
         <van-list   v-model="loading"  :finished="finished"  finished-text="别拉了没有更多了"  @load="onLoad" :immediate-check="false">
-          <van-cell v-for="item in datalist" :key="item.filmId" @click="btnclick(item.filmId)">
+                                                                                                               <!--第一次不触发-->
+          <van-cell v-for="item in datalist" :key="item.filmId">
+              <div class="buttonitemclick"  @click="btnclick(item.filmId)">
                 <div><img :src="item.poster"></div>
                 <div class="lastchild2">
-                   <div class="itemname"><h4>{{item.name}}</h4><span>{{item.filmType.name}}</span></div>
-                    <div class="itemgrade">观众评分:<span>{{item.grade}}</span></div>
+                    <div class="itemname"><h4>{{item.name}}</h4><span>{{item.filmType.name}}</span></div>
+                    <div class="itemgrade">观众评分:<span>{{item.grade | itemgrade}}</span></div>
                     <div>{{item.nation}} | {{item.runtime}}分钟</div>
-                   <div class="itemactors2">主演:{{item.actors | itemactrs}}</div>
+                    <div class="itemactors2">主演:{{item.actors | itemactrs}}</div>
                 </div>
-                <div><button>购票</button></div>
-            </van-cell>
+              </div>
+                 <div><movie-pagechildren-button>购票</movie-pagechildren-button></div>
+         </van-cell>
+
     </van-list>
-    </div>
 </template>
 <script>
 import { getMoviePagehttp01,getMoviePagehttp02 } from "@/network/MoviePagehttp"
-
-import Vue from 'vue';            //引入vue
-import { List,Cell, Form } from 'vant';    //引入vant组件
-Vue.use(List).use(Cell);                 //使用vant组件
+import MoviePagechildrenButton from './MoviePagechildrenButton.vue';
+import Vue from 'vue';            
+import { List,Cell} from 'vant';    //引入vant组件
+Vue.use(List).use(Cell);                   //使用vant组件
 
 
 Vue.filter("itemactrs",(actrs)=>{
-    if(actrs===undefined){return "暂无主演"}
+      if(actrs===undefined){return "暂无主演"}
       return actrs.map((n)=>{ return n.name;}).join(" ");    //过滤器
 })
+Vue.filter("itemgrade",(data)=>{
+    if(data===undefined){
+        return "暂无评分"                  //过滤器
+    }else{
+        return data
+    }
+})
+
 
 export default {
+  components: { MoviePagechildrenButton },
    name:"ChildrenIshit",
     data(){
-   return{
+     return{
       datalist:[],//接受数据
-      loading: false,     //设置引入组件的值
-      finished: false,     //设置引入组件的值
-      refreshing: false,
-      current:1,//标记者是第几页数据
+      loading: false,      //是否正在加载中
+      finished: false,     //是否已经结束
+      refreshing: false,   //
+      current:1,           //标记者是第几页数据
   }},
 
 
  methods:{
        btnclick(id){
-           this.$router.push(`/details/${id}`)
+           this.$router.push(`/details/${id}`)//启动动态路由
        },
-     onLoad(){      //引入的vant list组件到底部触发
+onLoad(){                   //引入的vant list组件到底部触发
      this.current++
 //Ajax请求新数据
 getMoviePagehttp02(this.$store.state.cityId,this.current).then(success=>{
     //console.log(success.data.data.films);
-    this.datalist=[...this.datalist,...success.data.data.films]
+    this.datalist=[...this.datalist,...success.data.data.films]         //拼接资源
   });
 //合并老数据
 this.loading = false;
@@ -58,7 +69,8 @@ this.loading = false;
           this.finished = true;
         }
  // 数据全部加载完成
-    },},
+},},
+
 
 mounted() {
       getMoviePagehttp01().then(success=>{
@@ -66,58 +78,61 @@ mounted() {
         this.datalist=success.data.data.films
   });},
 //电影页面正在热播请求数据前10条
-
 }
 </script>
 <style scoped>
-#ChildrenIshititem{
-    width: 100vw;
-}
+.van-list{ width: 100vw;}/*内容整体宽度*/
 .van-cell{
-     width: 100vw;
+     width: 100vw;   /*内容整体宽度*/
 }
 .van-cell__value{
     display: flex;
     margin:5px 10px  5px 10px;
-    justify-content:space-around;
+    justify-content: space-between;   /*内容每一个小整体宽度*/
     align-items: center;
 }
 img{
-    width:100px;
+    width:90px;
+    height: 130px;   /*图片大小*/
+}
+.buttonitemclick{
+display: flex;    /*设置跳转点击面积大小 */
+flex: 1;
+position: relative;
 }
 .lastchild2{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column; /*内容文字大小*/
     flex: 1;
-    position: relative;
-     margin-left:10px;
+    margin-left:5px;
 }
 .itemname{
     display: flex;
-    width: 220px;
-    overflow: hidden;
-    white-space: nowrap;
+    overflow: hidden;     /*内容文字第一行大小*/
+    white-space: nowrap;    
     text-overflow: ellipsis;
 }
 .itemname span{
     width: 40px;
     height: 20px;
     border-radius:15px;
-    background-color: silver;
+    color: #fff;
+    background-color: #d2d6dc;    /*几D电影样式*/
     text-align: center;
     line-height: 20px;
     margin-left: 5px;
 }
-
 .itemactors2{
-    position: absolute;
-    width: 100%;
     overflow: hidden;
-    white-space: nowrap;
+    width:200px;
+    white-space: nowrap;    /*演员溢出隐藏 */
     text-overflow: ellipsis;
-  
 }
-
 .itemgrade span{
-color: rgb(233, 162, 8);
+color: #ffb232;     /* 评分样式*/
+font-size: 14px;
 }
 </style>
 

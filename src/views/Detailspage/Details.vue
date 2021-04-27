@@ -1,9 +1,9 @@
 <template>
     <div v-if="detailslistdata">
-      <detailsheader v-header :titleA="detailslistdata.name"></detailsheader>
-      <div class="dataimg"><img :src="detailslistdata.poster"></div>
-      <!--标题图-->
-      <div class="dataitem">
+      <detailsheader v-header :titleA="detailslistdata.name"></detailsheader><!--头部下拉显示导航-->
+      <div class="dataimg"><img :src="detailslistdata.poster"></div> <!--标题图-->
+
+      <div class="dataitem"><!--详情内容-->
       <div class="detailslistdatanameitem">
           <div class="detailslistdatanameitem1">{{detailslistdata.name}} 
           <span class="spanitem1">{{detailslistdata.filmType.name}}</span></div>
@@ -17,88 +17,81 @@
           <svg class="icon" aria-hidden="true">
           <use :xlink:href="isshow?'#icon-iconfontjiantou':'#icon-jiantoushang'"></use>
           </svg>
-    </div>
-    </div>
-       <!--详情内容-->
-          <div id="details01swiperitem">
+     </div>
+     </div>
+    
+    <div class="details01swiperitem"><!--演员图轮播-->
               <span>演职人员</span>
-              <details-01-swiper :pres="5" swiperclassclass="actor">
+              <details-01-swiper :pres="5" swiperclass="actor">
                     <div class="swiper-slide" v-for="(item,data) in detailslistdata.actors" :key="data" >
                         <img :src="item.avatarAddress"/>
                         <h3>{{item.name}}</h3>
                         <h3>{{item.role}}</h3>
                         </div>     
               </details-01-swiper>
-          </div>
-<!--演员图轮播-->
-           <div id="details01swiperitem2">
-              <div><span>剧照</span><span>全部</span></div>
+     </div>
+    <div class="details01swiperitem2"><!--剧照图轮播-->
+              <div><span>剧照</span></div>
               <details-01-swiper :pres="3" swiperclass="stagephoto">
                     <div class="swiper-slide" v-for="(item,data) in detailslistdata.photos" :key="data" >
-                        <img :src="item"  @click="imgbtn(data)"/>
-                        </div>     
+                    <img :src="item"  @click="imgbtn(data)"/>
+                    </div>     
               </details-01-swiper>
           </div>
-      </div>
- <!--剧照图轮播-->
+  </div>
 </template>
 <script>
-import {ImagePreview} from 'vant';//导入vantz组件
-import Vue from "vue"         //导入vue
+import {Detailspagehttp01} from "@/network/Detailspagehttp"
+import Vue from "vue"    
+import {ImagePreview} from 'vant';//导入vant组件
 import moment from "moment"  //导入日期转换库
-import http from "@/network/http.js"
+
 import Details01Swiper from './Details01Swiper.vue'
 import Detailsheader from './Detailsheader.vue'
 
-Vue.filter("premiereAtdatatime",(data)=>{    //使用过滤器
-    return  moment(data).format('YYYY-MM-DD')  //使用日期转换库
+Vue.filter("premiereAtdatatime",(data)=>{           //使用过滤器
+    return  moment(data).format('YYYY-MM-DD')       //使用日期转换
 })
-Vue.directive("header",{     //自定义指令
+Vue.directive("header",{     //下拉显示自定义指令
     inserted(el){
        el.style.display="none";
        window.onscroll=()=>{
             if(document.body.scrollTop || document.documentElement.scrollTop >50){
                el.style.display="block";
                }else{
-                 el.style.display="none";
+                el.style.display="none";
                }}} ,
                unbind(){     //销毁指令
-                   window.onscroll=null
+                window.onscroll=null
                }  
 })
+
 export default {
   components: { Details01Swiper, Detailsheader },
     name:"Details",
-    data(){
+     data(){
         return{
-            detailslistdata: null ,   //接受数据
-            isshow:true,
-
-        }
-    },
+            detailslistdata: null ,      //接受数据
+            isshow:true,                 //默认
+             }},
     methods: {
         btnisshow(){
-            this.isshow=!this.isshow;
-        },
-        imgbtn(data){
-            ImagePreview({
-  images:this.detailslistdata.photos,
-  startPosition: data,
-   closeable: true,
-});
-        }
-    },
-    mounted() {
-         http({
-        url:`/gateway?filmId=${this.$route.params.id}&k=3554534`,   //this.$route.params.id获取当前处于正在使用的路由的动态ID
-           methods:"get",
-        }).then(
-            res=>{console.log(res.data.data.film);
-            this.detailslistdata=res.data.data.film;
-            })//数据请求
+            this.isshow=!this.isshow;    //点击下拉隐藏和显示切换
          },
 
-      
+        imgbtn(data){
+        ImagePreview({
+        images:this.detailslistdata.photos,                      //图片预览
+        startPosition: data,//指定起始位置
+        closeable: true,   //展示关闭按钮
+                 });}
+                 },
+
+mounted(){Detailspagehttp01(this.$route.params.id).then(//拿点击页面传过来的id
+            res=>{
+           // console.log(res.data.data.film);
+            this.detailslistdata=res.data.data.film;
+            })},//数据请求
 }
 </script>
 <style scoped>
@@ -108,12 +101,17 @@ export default {
     overflow: hidden;   /*头部包裹图片的div*/
 }
 .dataimg img{
-    width: 100%;/*图片的样式*/
+   width: 100%;/*图片的样式*/
 }
-
 .dataitem{
-    margin: 10px 5px 20px 5px;  /*包裹介绍的所以div*/
-    border-bottom: solid 10px rgb(179, 175, 175);
+    margin: 10px 5px; /*包裹介绍的所以div*/
+    border-bottom: solid 10px  rgb(244,244,244);
+   
+}
+.detailslistdatacategoryitem{
+    font-size: 15px;
+    color: #797d82;
+    margin-bottom: 10px;   /*包裹介绍的里面的统一样式*/
 }
 .detailslistdatanameitem{
 display: flex;
@@ -144,11 +142,6 @@ margin: 10px 0 10px 0;
 }/**包裹介绍的里面的第一个div里面样式*/
 
 
-.detailslistdatacategoryitem{
-   font-size: 15px;
-    color: #797d82;
-    margin-bottom: 10px;   /*包裹介绍的里面的统一样式*/
-}
 .detailslistdatasynopsisitem{
     font-size: 15px;
     color: #797d82;
@@ -158,6 +151,10 @@ margin: 10px 0 10px 0;
 }
 .center{width: 100%;
 text-align: center;}   /*箭头样式*/
+
+
+
+/*介绍内容*/
 .swiper-slide{
     font-size: 10px;
     color: #797d82;
@@ -165,22 +162,18 @@ text-align: center;}   /*箭头样式*/
 }
 .swiper-slide img{
     height: 100px;
-
 }
-#details01swiperitem{
-    border-bottom: solid 10px rgb(150, 146, 146);
+.details01swiperitem{
+    border-bottom: solid 10px rgb(244,244,244);
 }
-
-#details01swiperitem2{
+.details01swiperitem2{
     margin:15px;
 }
-
-#details01swiperitem2 img{
+.details01swiperitem2 img{
     height: 100px;
     height: 80px;
 }
-
-#headnavigation{
+.headnavigation{
     height: 50px;
     width: 100%;
     background-color: rgb(85, 37, 37);

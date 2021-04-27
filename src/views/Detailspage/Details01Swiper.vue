@@ -1,5 +1,5 @@
 <template>
-        <div class="swiper-container" :class=" swiperclass"> 
+        <div class="swiper-container" :class="swiperclass"> 
         <div class="swiper-wrapper">
           <slot></slot>      
         </div>
@@ -23,7 +23,7 @@ export default {
    mounted() {
        new Swiper ('.'+this.swiperclass,{    //使用swiper组件
         slidesPerView:this.pres,
-        spaceBetween: 10,
+        spaceBetween:20,
         pagination: {
         el: '.swiper-pagination',
         clickable: true,

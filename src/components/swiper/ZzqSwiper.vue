@@ -24,16 +24,20 @@ export default {
   },
   mounted() {
    new Swiper ('.swiper-container',{
-            loop:true,//循环模式选项
-            //direction: 'vertical', // 垂直切换选项
-
+     loop:true,//循环模式选项
+        
+      spaceBetween: 30,
+      centeredSlides: true,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+      },
 
         speed: 2000,
         navigation: {
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev',
       },
-
 
       pagination: {
         el: '.swiper-pagination',
@@ -46,11 +50,10 @@ export default {
 </script>
 <style scoped>
 .swiper-container {
+    height:300px;
     width:100%;
-    height:240px;
-    background-color: rgb(221, 23, 23);
-            } 
+    } 
  .swiper-container img{
-   width: 100%;
+    width: 100%;
  }
 </style>
