@@ -5,13 +5,13 @@
     v-model="value"
     show-action
     placeholder="请输入搜索关键词"
-    @search="onSearch"
+    @search="onSearch"        
     @cancel="onCancel"
   />
 </form>
 <div>
     <van-list>
-          <van-cell v-for="item in computedTheaterpagelist" :key="item.cinemaId">
+          <van-cell v-for="item in computedTheaterpagelist" :key="item.cinemaId"><!--模糊查询到的数据进行展示-->
               <div class="itemname"><div>{{item.name}}</div><span>{{item.lowPrice | itemlowPrice}}</span></div>
               <div class="itemaddress"><div>{{item.address}}</div></div>
           </van-cell>
@@ -30,32 +30,38 @@ export default {
    name:"Search",
    data() {
     return {
-      value: '',
+      value: '',//初始值
     };
   },
+
+
+
   methods: {
     onSearch(val) {
-      Toast(val);
+      Toast(val);   //搜索点击轻提示
     },
     onCancel() {
-      Toast('取消');
-      this.$router.replace("/theaterpage")
+      this.$router.replace("/theaterpage")   //点击取消按钮时触发
     },
   },
+
+
    computed:{
        computedTheaterpagelist(){
        return this.$store.state.Theaterpagelist.filter(
            item=>{
                return item.name.toUpperCase().includes(this.value.toUpperCase() || item.address.includes(this.value))
-           }
-       )
-       }
+           })
+       }//模糊查询对应的数据
    },
+
+
+
    mounted() {
        if(this.$store.state.Theaterpagelist.length===0){
       this.$store.dispatch("Theaterpageajax",this.$store.state.cityId)
       }else{
-          console.log("缓存")
+          console.log("缓存")                                 //向vuex请求数据      
       }
      // console.log(this.$store.state.Theaterpagelist)
    },
@@ -74,5 +80,9 @@ export default {
     color: #797d82;
     font-size: 12px;              /*lil里面第二行div样式*/
     margin-top: 5px;
+}
+.itemname span{
+    font-size: 15px;               /*价格样式 */
+    color: #ff5f16;             
 }
 </style>

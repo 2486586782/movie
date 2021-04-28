@@ -73,7 +73,7 @@ this.loading = false;
 
 
 mounted() {
-      getMoviePagehttp01().then(success=>{
+      getMoviePagehttp01(this.$store.state.cityId).then(success=>{
         //console.log(success.data.data.films);
         this.datalist=success.data.data.films
   });},

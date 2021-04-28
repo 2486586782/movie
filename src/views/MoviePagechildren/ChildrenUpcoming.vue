@@ -65,7 +65,7 @@ this.loading = false;
 
 
 mounted() {
-      getMoviePagehttp03().then(success=>{
+      getMoviePagehttp03(this.$store.state.cityId).then(success=>{
         //console.log(success.data.data.films);
         this.datalist=success.data.data.films
   });},
