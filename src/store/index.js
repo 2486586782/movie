@@ -44,13 +44,11 @@ clearTheaterpagelist(state){
       state.Theaterpagelist=[]             //解决城市页面缓存的问题
 }
 
-
-
 },
 
 
 actions: {
-  Theaterpageajax(store,cityId){
+  Theaterpageajax(context,cityId){
      return http({
         url:`/gateway?cityId=${cityId}&ticketFlag=1&k=52112`,
         headers:{
@@ -59,7 +57,7 @@ actions: {
     }).then(
     res=>{
       //console.log(res.data.data.cinemas);
-      store.commit('Theaterpagelistvalue',res.data.data.cinemas)
+      context.commit('Theaterpagelistvalue',res.data.data.cinemas)
    });}
 
 
