@@ -18,6 +18,7 @@
     </van-list>
 </template>
 <script>
+import {mapState} from "vuex"
 import { getMoviePagehttp01,getMoviePagehttp02 } from "@/network/MoviePagehttp"
 import MoviePagechildrenButton from './MoviePagechildrenButton.vue';
 import Vue from 'vue';            
@@ -40,6 +41,9 @@ Vue.filter("itemgrade",(data)=>{
 
 export default {
   components: { MoviePagechildrenButton },
+  computed:{
+      ...mapState("city",["cityId"])
+  },
    name:"ChildrenIshit",
     data(){
      return{
@@ -58,7 +62,7 @@ export default {
 onLoad(){                   //引入的vant list组件到底部触发
      this.current++
 //Ajax请求新数据
-getMoviePagehttp02(this.$store.state.cityId,this.current).then(success=>{
+getMoviePagehttp02(this.cityId,this.current).then(success=>{
     //console.log(success.data.data.films);
     this.datalist=[...this.datalist,...success.data.data.films]         //拼接资源
   });
@@ -73,7 +77,7 @@ this.loading = false;
 
 
 mounted() {
-      getMoviePagehttp01(this.$store.state.cityId).then(success=>{
+      getMoviePagehttp01(this.cityId).then(success=>{
         //console.log(success.data.data.films);
         this.datalist=success.data.data.films
   });},

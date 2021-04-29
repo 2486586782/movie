@@ -1,13 +1,17 @@
 <template>
 <div id="app">
 <router-view id="view"></router-view>
-<zzq-tabber v-show="this.$store.state.zzqtabbershow"></zzq-tabber>  <!--底部导航使用Vuex控制显示和隐藏-->
+<zzq-tabber v-show="zzqtabbershow"></zzq-tabber>  <!--底部导航使用Vuex控制显示和隐藏-->
 </div>
 </template>
 <script>
+import {mapState} from "vuex"                         //映射状态
 import ZzqTabber from './components/tabbar/ZzqTabber'          //导入底部导航
 export default {
   components: { ZzqTabber },
+  computed:{
+    ...mapState('zzqtabbermodel',['zzqtabbershow'])
+  }
 }
 </script>
 <style>

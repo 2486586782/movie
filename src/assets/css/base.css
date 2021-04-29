@@ -1,6 +1,7 @@
 *{
   padding: 0;
   margin: 0;
+  touch-action: manipulation;   /*解决双击所发页面的问题*/
 }
 li{
 list-style-type: none;

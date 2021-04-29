@@ -22,6 +22,7 @@
 <script>
 import Vue from 'vue';
 import { Search,Toast,list,Cell } from 'vant';
+import { mapActions, mapState } from 'vuex';
 Vue.use(Search).use(Toast).use(list).use(Cell);
 Vue.filter("itemlowPrice",(data)=>{   //过滤器
     return '￥'+data/100+"起"
@@ -37,6 +38,7 @@ export default {
 
 
   methods: {
+    ...mapActions("Theaterpage",["Theaterpageajax"]),
     onSearch(val) {
       Toast(val);   //搜索点击轻提示
     },
@@ -47,8 +49,10 @@ export default {
 
 
    computed:{
+     ...mapState("Theaterpage",["Theaterpagelist"]),
+     ...mapState("city",["cityId"]),
        computedTheaterpagelist(){
-       return this.$store.state.Theaterpagelist.filter(
+       return this.Theaterpagelist.filter(
            item=>{
                return item.name.toUpperCase().includes(this.value.toUpperCase() || item.address.includes(this.value))
            })
@@ -58,8 +62,8 @@ export default {
 
 
    mounted() {
-       if(this.$store.state.Theaterpagelist.length===0){
-      this.$store.dispatch("Theaterpageajax",this.$store.state.cityId)
+       if(this.Theaterpagelist.length===0){
+      this.Theaterpageajax(this.cityId)
       }else{
           console.log("缓存")                                 //向vuex请求数据      
       }

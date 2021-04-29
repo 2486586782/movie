@@ -18,7 +18,7 @@
 </template>
 <script>
 import {getMoviePagehttp03,getMoviePagehttp04 } from "@/network/MoviePagehttp"
-
+import {mapState} from "vuex"
 import Vue from 'vue';            
 import { List,Cell} from 'vant';    //引入vant组件
 import MoviePagechildrenButton from './MoviePagechildrenButton.vue';
@@ -32,6 +32,9 @@ Vue.filter("itemactrs",(actrs)=>{
 export default {
   components: { MoviePagechildrenButton },
    name:"ChildrenUpcoming",
+   computed:{
+     ...mapState("city",["cityId"])
+   },
    data(){
      return{
       datalist:[],//接受数据
@@ -49,7 +52,7 @@ export default {
 onLoad(){      //引入的vant list组件到底部触发
      this.current++
 //Ajax请求新数据
-getMoviePagehttp04(this.$store.state.cityId,this.current).then(success=>{
+getMoviePagehttp04(this.cityId,this.current).then(success=>{
     //console.log(success.data.data.films);
     this.datalist=[...this.datalist,...success.data.data.films]
   });
@@ -65,7 +68,7 @@ this.loading = false;
 
 
 mounted() {
-      getMoviePagehttp03(this.$store.state.cityId).then(success=>{
+      getMoviePagehttp03(this.cityId).then(success=>{
         //console.log(success.data.data.films);
         this.datalist=success.data.data.films
   });},

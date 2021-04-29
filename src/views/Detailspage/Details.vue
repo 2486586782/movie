@@ -1,4 +1,5 @@
 <template>
+<v-touch @swiperight="onSwiperight">
     <div v-if="detailslistdata">
       <detailsheader v-header :titleA="detailslistdata.name"></detailsheader><!--头部下拉显示导航-->
       <div class="dataimg"><img :src="detailslistdata.poster"></div> <!--标题图-->
@@ -39,8 +40,12 @@
               </details-01-swiper>
           </div>
   </div>
+</v-touch>
 </template>
 <script>
+import Vuetouch from "vue-touch"
+Vue.use(Vuetouch,{name:"v-touch"})
+
 import {Detailspagehttp01} from "@/network/Detailspagehttp"
 import Vue from "vue"    
 import {ImagePreview} from 'vant';//导入vant组件
@@ -75,6 +80,11 @@ export default {
             isshow:true,                 //默认
              }},
     methods: {
+       onSwiperight(){
+            this.$router.push("/moviepage")
+
+        },//手势右侧滑动事件
+
         btnisshow(){
             this.isshow=!this.isshow;    //点击下拉隐藏和显示切换
          },

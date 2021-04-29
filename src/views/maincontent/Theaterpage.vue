@@ -2,7 +2,7 @@
 <div class="Theatwepage">
     <van-nav-bar title="影院" left-arrow @click-left="clickleft" @click-right="clickright" class="index"> 
     <template #left>
-     {{$store.state.cituName}}                                    <!--向vuex拿城市信息-->  
+     {{cituName}}                                    <!--向vuex拿城市信息-->  
     <van-icon name="arrow-down" size="18" color="black" />
     </template> 
     <template #right>
@@ -12,7 +12,7 @@
 
     <div class="scrollinghelper" :style="{height:getheight}"><!--使用BScroll组件和动态获取高度-->
             <ul>
-          <van-cell v-for="item in $store.state.Theaterpagelist" :key="item.cinemaId"><!--TheaterPagelistarr是一个计算属性-->
+          <van-cell v-for="item in Theaterpagelist" :key="item.cinemaId"><!--TheaterPagelistarr是一个计算属性-->
               <div class="itemname"><div>{{item.name}}</div><span>{{item.lowPrice | itemlowPrice}}</span></div>
               <div class="itemaddress"><div>{{item.address}}</div></div>
           </van-cell>
@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import {mapState,mapMutations, mapActions} from "vuex"
 import Vue from 'vue';
 import { NavBar,icon, Cell} from 'vant';
 Vue.use(NavBar).use(icon).use(Cell);
@@ -41,10 +42,20 @@ export default {
        }
    },
 
-
+methods: {
+      ...mapMutations("zzqtabbermodel",['bottomdisplay','bottomhidden']),
+      ...mapActions("Theaterpage",["Theaterpageajax"]),
+       clickleft(){
+            this.$router.push("/city")   //点击跳转city页面
+       },
+       clickright(){
+            this.$router.push("/theaterpage/search")   //点击跳转/theaterpage/search页面
+       },
+   },
 
    mounted() {
-        this.$store.commit("bottomhidden")                     //进入这个组件让底部导航隐藏
+        this.bottomhidden();
+                                  //进入这个组件让底部导航隐藏
    /*   Theaterpagehttp(this.$store.state.cityId).then(            //请求数据
      res=>{
           console.log(res.data.data.cinemas);
@@ -54,8 +65,8 @@ export default {
              })                                                 //使用BScroll组件滚动
           })
      })*/
-      if(this.$store.state.Theaterpagelist.length===0){
-         this.$store.dispatch("Theaterpageajax",this.$store.state.cityId).then(
+      if(this.Theaterpagelist.length===0){
+         this.Theaterpageajax(this.cityId).then(
               res=>{
                   this.$nextTick(()=>{
                    let bs = new BScroll('.scrollinghelper', {                       //使用BScroll组件滚动  
@@ -68,27 +79,16 @@ export default {
           }
    },
 
-
  beforeDestroy() {
-         this.$store.commit("bottomdisplay")      //离开这个组件让底部导航显示
+          this.bottomdisplay();      //离开这个组件让底部导航显示
    },
-
 
 computed:{
+    ...mapState("city",["cituName","cityId"]),
+    ...mapState('Theaterpage',['Theaterpagelist']),
 getheight(){
     return document.documentElement.clientHeight+"px"        //利用计算属性动态获取视口高度
-},
-},
-
-
-methods: {
-       clickleft(){
-            this.$router.push("/city")   //点击跳转city页面
-       },
-       clickright(){
-            this.$router.push("/theaterpage/search")   //点击跳转/theaterpage/search页面
-       },
-   },
+}},
 }
 </script>
 <style scoped>

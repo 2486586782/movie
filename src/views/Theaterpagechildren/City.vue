@@ -20,6 +20,7 @@
 import {Theaterpagehttpcity} from "@/network/Theaterpagehttp"
 import Vue from 'vue';
 import { IndexBar, IndexAnchor,Cell,Toast} from 'vant';
+import { mapMutations } from 'vuex';
 Vue.use(IndexAnchor).use(Cell).use(Toast).use(IndexBar);
 
 export default {
@@ -37,11 +38,13 @@ computed:{
 
 
 created() {
-    this.$store.commit("clearTheaterpagelist");//解决缓存的问题，设置方法让进入城市页面的时候让原来缓存为空
+    this.clearTheaterpagelist();//解决缓存的问题，设置方法让进入城市页面的时候让原来缓存为空
 },
 
 
 methods: {
+     ...mapMutations('Theaterpage',['clearTheaterpagelist']),
+     ...mapMutations("city",["cituNamemodification","cityIdmodification"]),
            citiesdata(data){
          //进行数据转换成自己需要的数据
          const letterArr=[];//26个字母集合
@@ -74,8 +77,8 @@ methods: {
 //点击城市跳转路由
         pushrouter(name,id){
         this.$router.replace("/moviepage");                           //点击之后跳转首页
-        this.$store.commit("cituNamemodification",name)   //点击向vuex提交所点击的城市
-        this.$store.commit("cityIdmodification",id)       //点击向vuex提交所点击的城市的ID
+        this.cituNamemodification(name)   //点击向vuex提交所点击的城市
+        this.cityIdmodification(id)       //点击向vuex提交所点击的城市的ID
            }},
 
 
